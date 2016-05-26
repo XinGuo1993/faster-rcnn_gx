@@ -1,0 +1,65 @@
+#
+# configuration for training faster-rcnn
+#   image -> rpn -> proposals -> fast-rcnn -> detection result
+#
+# stage-1: train a region proposal network with pretrained model
+# stage-2: train a fst-rcnn network with pretrained model 
+# stage-3: fine-tune rpn with model trained by stage2
+# stafe-4: fine-tune fast-rcnn with mode trained by stage2
+# stage-5: test final model on the dataset (test set)
+#
+
+common:
+    rpn_cfg: ''
+    fast_rcnn_cfg: ''
+    pretrained_model: 'data/imagenet_models/VGG16.v2.caffemodel'
+
+stage1:
+    name: 'train_rpn'
+    solver: 'models/RPN_Net/VGG16/solver_60k80k.prototxt'
+    test_net: 'models/RPN_Net/VGG16/test.prototxt'
+    max_iters: 80000
+    model_path: 'data/rpn_models/rpn_vgg16_{:s}_final.caffemodel'
+
+stage2:
+    name: 'train_fast-rcnn'
+    solver: 'models/fast_rcnn/VGG16/solver_30k40k.prototxt'
+    test_net: 'models/fast_rcnn/VGG16/test.prototxt'
+    max_iters: 40000 
+    model_path: 'data/fast_rcnn_models/fast_rcnn_vgg16_{:s}_final.caffemodel'
+
+stage3:
+    name: 'fine-tune_rpn'
+    solver: 'models/RPN_Net/VGG16_fc6/solver_60k80k.prototxt'
+    test_net: 'models/RPN_Net/VGG16_fc6/test.prototxt'
+    max_iters: 80000 
+    model_path: 'data/rpn_models/rpn_vgg16_fc6_{:s}_final.caffemodel'
+    
+stage4:
+    name: 'fine-tune_fast-rcnn'
+    solver: 'models/fast_rcnn/VGG16_fc6/solver_30k40k.prototxt'
+    test_net: 'models/fast_rcnn/VGG16_fc6/test.prototxt'
+    max_iters: 40000
+    model_path: 'data/fast_rcnn_models/fast_rcnn_vgg16_fc6_{:s}_final.caffemodel'
+
+stage5:
+    name: 'test_imdb'
+
+stage1_nms:
+    USE_GPU: False
+    NMS_THRESH: 0.7
+    PRE_NMS_TOPN: -1
+    POST_NMS_TOPN: 2000
+
+stage3_nms:
+    USE_GPU: False
+    NMS_THRESH: 0.7
+    PRE_NMS_TOPN: -1
+    POST_NMS_TOPN: 2000
+ 
+final_test_nms:
+    USE_GPU: False
+    NMS_THRESH: 0.7
+    PRE_NMS_TOPN: 6000
+    POST_NMS_TOPN: 300 
+

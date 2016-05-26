@@ -1,0 +1,10 @@
+EXP_DIR: mix_overlap_09
+TRAIN:
+  SNAPSHOT_INFIX: mix_overlap_09
+  FG_THRESH: 0.9
+  BG_THRESH_HI: 0.5
+ANCHOR:
+  TEST_DROP_BOXES_RUNOFF_IMG: True
+TEST:
+  MAX_SIZE: 4000
+  SCALES: !!python/tuple [600, ]
